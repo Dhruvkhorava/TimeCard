@@ -29,6 +29,9 @@ Route::middleware(['auth'])->group(function () {
     // Timecard System
     Route::resource('projects', ProjectController::class);
     Route::resource('tasks', TaskController::class);
+    Route::get('tasks/attachments/{attachment}/download', [TaskController::class, 'downloadAttachment'])->name('tasks.attachments.download');
+    Route::get('tasks/attachments/{attachment}/view', [TaskController::class, 'viewAttachment'])->name('tasks.attachments.view');
+    Route::delete('tasks/attachments/{attachment}', [TaskController::class, 'deleteAttachment'])->name('tasks.attachments.destroy');
     Route::get('daily-updates/fetch-by-date', [DailyUpdateController::class, 'fetchByDate'])->name('daily-updates.fetch-by-date');
     Route::get('daily-updates/fetch-tasks/{projectId}', [DailyUpdateController::class, 'fetchTasksByProject'])->name('daily-updates.fetch-tasks');
     Route::resource('daily-updates', DailyUpdateController::class);

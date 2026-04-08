@@ -10,7 +10,7 @@
         <div class="row">
           <div class="col-md-8">
             <h3 class="font-weight-bolder text-info text-gradient mb-0">Edit Client: {{ $client->name }}</h3>
-            <p class="text-sm text-secondary">Manage partner relationship and portal credentials.</p>
+            <p class="text-sm text-secondary">Manage partner relationship and information.</p>
           </div>
           <div class="col-md-4 text-end d-flex align-items-center justify-content-end">
             <div id="image-preview-container" class="avatar avatar-xl position-relative border-radius-lg shadow-sm" style="background: #f8f9fa; border: 2px dashed #dee2e6; overflow: hidden;">
@@ -50,17 +50,7 @@
           </div>
           
           <div class="row">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label class="form-control-label">New Password <span class="text-xs text-secondary font-weight-normal">(Optional)</span></label>
-                <div class="input-group mb-3">
-                  <span class="input-group-text"><i class="ni ni-key-25"></i></span>
-                  <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Leave empty to keep current">
-                </div>
-                @error('password') <p class="text-danger text-xs mt-1">{{ $message }}</p> @enderror
-              </div>
-            </div>
-            <div class="col-md-6">
+            <div class="col-md-12">
               <div class="form-group">
                 <label class="form-control-label">Update Company Logo</label>
                 <div class="input-group mb-3">
@@ -140,7 +130,7 @@
               <i class="ni ni-bold-left me-2"></i>Discard Changes
             </a>
             <button type="submit" class="btn bg-gradient-info btn-lg mb-0 shadow-sm border-radius-lg px-5">
-              Update Client Account
+              Update Client
             </button>
           </div>
         </form>

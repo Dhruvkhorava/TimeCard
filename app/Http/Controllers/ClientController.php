@@ -23,7 +23,6 @@ class ClientController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'designation' => 'nullable|string|max:255',
@@ -33,7 +32,7 @@ class ClientController extends Controller
         ]);
 
         $userData = $request->only(['name', 'email', 'phone', 'address', 'designation', 'department', 'status']);
-        $userData['password'] = bcrypt($request->password);
+        $userData['password'] = bcrypt(\Illuminate\Support\Str::random(16));
 
         if ($request->hasFile('profile_image')) {
             $imagePath = $request->file('profile_image')->store('profile_images', 'public');
@@ -56,7 +55,6 @@ class ClientController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $client->id,
-            'password' => 'nullable|string|min:8',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'designation' => 'nullable|string|max:255',
@@ -67,9 +65,6 @@ class ClientController extends Controller
 
         $userData = $request->only(['name', 'email', 'phone', 'address', 'designation', 'department', 'status']);
         
-        if ($request->filled('password')) {
-            $userData['password'] = bcrypt($request->password);
-        }
 
         if ($request->hasFile('profile_image')) {
             $imagePath = $request->file('profile_image')->store('profile_images', 'public');

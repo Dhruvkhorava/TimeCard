@@ -24,13 +24,13 @@
 
         <div class="mb-4">
             <p class="text-xs font-weight-bold mb-1 text-uppercase text-secondary">Description</p>
-            <p class="text-sm">{{ $task->description ?: 'No description provided.' }}</p>
+            <div class="text-sm task-description">{!! $task->description ?: 'No description provided.' !!}</div>
         </div>
 
         <div class="row mb-4">
             <div class="col-6">
                 <p class="text-xs font-weight-bold mb-1 text-uppercase text-secondary">Assigned To</p>
-                <p class="text-sm font-weight-bold">{{ $task->employee->name }}</p>
+                <p class="text-sm font-weight-bold">{{ $task->employee->name ?? 'N/A' }}</p>
             </div>
             <div class="col-6">
                 <p class="text-xs font-weight-bold mb-1 text-uppercase text-secondary">Status</p>
@@ -39,6 +39,48 @@
                 </span>
             </div>
         </div>
+
+        @if($task->attachments->count() > 0)
+        <div class="mb-4">
+            <p class="text-xs font-weight-bold mb-2 text-uppercase text-secondary">Attachments</p>
+            <div class="row">
+                @foreach($task->attachments as $attachment)
+                    @php
+                        $extension = strtolower(pathinfo($attachment->original_name, PATHINFO_EXTENSION));
+                        $iconClass = 'ni ni-folder-17';
+                        $colorClass = 'bg-gradient-primary';
+                        
+                        if ($extension === 'pdf') {
+                            $iconClass = 'fas fa-file-pdf';
+                            $colorClass = 'bg-gradient-danger';
+                        } elseif (in_array($extension, ['xls', 'xlsx', 'csv'])) {
+                            $iconClass = 'fas fa-file-excel';
+                            $colorClass = 'bg-gradient-success';
+                        }
+                    @endphp
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center p-2 border border-radius-lg border-light shadow-none">
+                            <div class="icon icon-sm icon-shape {{ $colorClass }} shadow text-center border-radius-md me-3">
+                                <i class="{{ $iconClass }} text-white opacity-10"></i>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <h6 class="mb-0 text-dark text-sm text-truncate">{{ $attachment->original_name }}</h6>
+                                <p class="text-xxs text-secondary mb-0">{{ number_format($attachment->file_size / 1024, 2) }} KB</p>
+                            </div>
+                            <div class="ms-3 d-flex">
+                                <a href="{{ route('tasks.attachments.view', $attachment->id) }}" target="_blank" class="btn btn-link text-info icon-move-right my-auto btn-sm p-0 me-2" data-bs-toggle="tooltip" title="View Document">
+                                    <i class="fas fa-eye text-lg"></i>
+                                </a>
+                                <a href="{{ route('tasks.attachments.download', $attachment->id) }}" class="btn btn-link text-primary icon-move-right my-auto btn-sm p-0" data-bs-toggle="tooltip" title="Download">
+                                    <i class="ni ni-cloud-download-95 text-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
 
         <hr class="horizontal dark">
 

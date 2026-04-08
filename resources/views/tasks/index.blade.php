@@ -31,6 +31,7 @@
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Task Details</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Project</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Documents</th>
                                     @unless (auth()->user()->hasRole('employee'))
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Assigned To</th>
                                     @endunless
@@ -43,10 +44,9 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex px-3 py-1">
-                                                <div class="d-flex flex-column justify-content-center">
                                                     <h6 class="mb-0 text-sm font-weight-bold text-dark">{{ $task->name }}</h6>
                                                     <p class="text-xs text-secondary mb-0">
-                                                        {{ Str::limit($task->description, 60) }}
+                                                        {{ Str::limit(strip_tags($task->description), 60) }}
                                                         @if($task->phase)
                                                             <span class="badge badge-sm bg-light text-dark ms-2" style="font-size: 0.65rem;">
                                                                 <i class="fas fa-layer-group me-1 opacity-5"></i>{{ $task->phase->name }}
@@ -60,6 +60,38 @@
                                             <span class="badge badge-sm border border-primary text-primary bg-transparent font-weight-bold">
                                                 {{ $task->project?->name ?? 'No Project' }}
                                             </span>
+                                        </td>
+                                        <td>
+                                            @if($task->attachments->count() > 0)
+                                                <div class="d-flex flex-column">
+                                                    @foreach($task->attachments as $attachment)
+                                                        @php
+                                                            $extension = strtolower(pathinfo($attachment->original_name, PATHINFO_EXTENSION));
+                                                            $iconClass = 'fa-file-download';
+                                                            $textClass = 'text-info';
+                                                            
+                                                            if ($extension === 'pdf') {
+                                                                $iconClass = 'fa-file-pdf';
+                                                                $textClass = 'text-danger';
+                                                            } elseif (in_array($extension, ['xls', 'xlsx', 'csv'])) {
+                                                                $iconClass = 'fa-file-excel';
+                                                                $textClass = 'text-success';
+                                                            }
+                                                        @endphp
+                                                        <div class="d-flex align-items-center mb-1">
+                                                            <a href="{{ route('tasks.attachments.view', $attachment->id) }}" target="_blank"
+                                                               class="text-xs {{ $textClass }} font-weight-bold" data-bs-toggle="tooltip" title="View Document">
+                                                                <i class="fas {{ $iconClass }} me-1"></i> {{ Str::limit($attachment->original_name, 15) }}
+                                                            </a>
+                                                            <a href="{{ route('tasks.attachments.download', $attachment->id) }}" class="ms-2 text-secondary opacity-7" data-bs-toggle="tooltip" title="Download">
+                                                                <i class="fas fa-download text-xxs"></i>
+                                                            </a>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @else
+                                                <span class="text-xxs text-secondary opacity-5">No Docs</span>
+                                            @endif
                                         </td>
                                         @unless (auth()->user()->hasRole('employee'))
                                             <td>
@@ -112,6 +144,11 @@
                                         </td>
                                         <td class="align-middle text-center">
                                             <div class="d-flex justify-content-center align-items-center">
+                                                <a href="{{ route('tasks.show', $task->id) }}"
+                                                    class="btn btn-link text-primary px-3 mb-0" data-bs-toggle="tooltip" title="View Details">
+                                                    <i class="fas fa-eye text-primary" aria-hidden="true"></i>
+                                                    <span class="ms-1 font-weight-bold">View</span>
+                                                </a>
                                                 @if (auth()->user()->hasRole('employee') && $task->status != 'completed')
                                                     <a href="{{ route('daily-updates.index', ['task_id' => $task->id]) }}"
                                                         class="btn btn-link text-info px-3 mb-0" data-bs-toggle="tooltip" title="Update Daily Progress">

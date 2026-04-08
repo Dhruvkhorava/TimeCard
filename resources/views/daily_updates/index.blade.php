@@ -14,7 +14,12 @@
                         @csrf
                         <div class="card-header pb-0 border-0 bg-transparent">
                             <div class="d-flex align-items-center justify-content-between">
-                                <h6 class="mb-0">Submit Daily Update</h6>
+                                <div class="d-flex align-items-center">
+                                    <a href="{{ route('tasks.index') }}" class="btn btn-link text-primary p-0 mb-0 me-3" data-bs-toggle="tooltip" title="Back to Task List">
+                                        <i class="fas fa-chevron-left text-lg"></i>
+                                    </a>
+                                    <h6 class="mb-0">Submit Daily Update</h6>
+                                </div>
                                 <div class="d-flex align-items-center gap-2">
                                     <label class="text-xs font-weight-bold mb-0 text-uppercase text-secondary">Entry Date:</label>
                                     <input type="date" class="form-control form-control-sm w-auto" name="date" required

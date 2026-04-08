@@ -19,8 +19,6 @@ class DashboardController extends Controller
         
         if ($user->hasAnyRole(['superadmin', 'admin'])) {
             $role = 'admin';
-        } elseif ($user->hasRole('client')) {
-            $role = 'client';
         }
 
         $stats = [
@@ -56,25 +54,7 @@ class DashboardController extends Controller
                 $hoursData[] = (float) DailyUpdate::whereDate('date', $dayStr)->sum('hours_spent');
             }
             
-        } elseif ($role === 'client') {
-            $stats['total_projects'] = Project::where('client_id', $user->id)->count();
-            $stats['total_tasks'] = Task::whereHas('project', function($q) use($user) {
-                $q->where('client_id', $user->id);
-            })->count();
-            $stats['total_clients'] = 1; 
-            
-            $recentProjects = Project::where('client_id', $user->id)->with(['tasks'])->latest()->take(5)->get();
-            $timeline = collect(); 
-            
-            $projectIds = $recentProjects->pluck('id');
-            // Chart Data
-            foreach ($dates as $date) {
-                $dayStr = Carbon::parse($date)->format('Y-m-d');
-                $hoursData[] = (float) DailyUpdate::whereHas('task', function($q) use($projectIds) {
-                    $q->whereIn('project_id', $projectIds);
-                })->whereDate('date', $dayStr)->sum('hours_spent');
-            }
-            
+
         } else { // Employee
             $stats['total_projects'] = Project::whereHas('tasks', function($q) use($user) {
                 $q->whereHas('employees', function($sq) use($user) {

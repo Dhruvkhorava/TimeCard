@@ -66,18 +66,58 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // 4. Auto-Initialize Select2 for elements with .select2 class
-    if ($.fn.select2) {
+    // 4. Auto-Initialize Select2 for elements with .select2-init class
+    if (typeof $.fn.select2 !== "undefined") {
         $(".select2-init").each(function () {
             const placeholder = $(this).data("placeholder") || "Select option";
             $(this).select2({
+                theme: "bootstrap-5",
                 placeholder: placeholder,
                 width: "100%",
+                selectionCssClass: "select2--small",
+                dropdownCssClass: "select2--small",
             });
         });
     }
 
-    // 5. Perfect Scrollbar Initialization for Sidenav
+    // 5. Auto-Initialize CKEditor for elements with .editor class
+    if (typeof ClassicEditor !== "undefined") {
+        document.querySelectorAll(".editor").forEach((el) => {
+            ClassicEditor.create(el, {
+                toolbar: {
+                    items: [
+                        "heading",
+                        "|",
+                        "bold",
+                        "italic",
+                        "link",
+                        "bulletedList",
+                        "numberedList",
+                        "|",
+                        "outdent",
+                        "indent",
+                        "|",
+                        "blockQuote",
+                        "insertTable",
+                        "undo",
+                        "redo",
+                    ],
+                },
+                language: "en",
+            })
+                .then((editor) => {
+                    if (el.disabled) {
+                        editor.enableReadOnlyMode("editor");
+                    }
+                    console.log("Editor was initialized", editor);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        });
+    }
+
+    // 6. Perfect Scrollbar Initialization for Sidenav
     var win = navigator.platform.indexOf("Win") > -1;
     if (win && document.querySelector("#sidenav-scrollbar")) {
         if (typeof Scrollbar !== "undefined") {
@@ -341,6 +381,49 @@ document.addEventListener("DOMContentLoaded", function () {
                 reader.readAsDataURL(this.files[0]);
             }
         });
+    }
+
+    // Task Attachment Manager
+    const addAttachmentBtn = document.getElementById("add-attachment");
+    const attachmentContainer = document.getElementById("attachment-container");
+
+    if (addAttachmentBtn && attachmentContainer) {
+        addAttachmentBtn.addEventListener("click", function () {
+            const newRow = document.createElement("div");
+            newRow.className = "input-group mb-2 attachment-row";
+            newRow.innerHTML = `
+                <input type="file" name="attachments[]" class="form-control form-control-sm">
+                <button type="button" class="btn btn-outline-danger mb-0 remove-attachment">
+                    <i class="fas fa-trash text-xs"></i>
+                </button>
+            `;
+            attachmentContainer.appendChild(newRow);
+            updateAttachmentRemoveButtons();
+        });
+
+        attachmentContainer.addEventListener("click", function (e) {
+            const btn = e.target.closest(".remove-attachment");
+            if (btn) {
+                const row = btn.closest(".attachment-row");
+                if (document.querySelectorAll(".attachment-row").length > 1) {
+                    row.remove();
+                    updateAttachmentRemoveButtons();
+                }
+            }
+        });
+
+        function updateAttachmentRemoveButtons() {
+            const rows = document.querySelectorAll(".attachment-row");
+            const removeButtons = document.querySelectorAll(".remove-attachment");
+            if (rows.length === 1) {
+                if (removeButtons[0]) removeButtons[0].style.display = "none";
+            } else {
+                removeButtons.forEach((btn) => (btn.style.display = "block"));
+            }
+        }
+
+        // Initial setup
+        updateAttachmentRemoveButtons();
     }
 });
 

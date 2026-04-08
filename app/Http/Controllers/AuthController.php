@@ -27,6 +27,14 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            $user = Auth::user();
+            if ($user->hasRole('client')) {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'Client access is restricted to administrative management only.',
+                ])->onlyInput('email');
+            }
+
             $request->session()->regenerate();
 
             return redirect()->intended(route('dashboard'));

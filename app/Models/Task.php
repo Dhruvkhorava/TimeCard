@@ -39,4 +39,9 @@ class Task extends Model
     {
         return $this->hasMany(DailyUpdate::class);
     }
+
+    public function attachments()
+    {
+        return $this->hasMany(TaskAttachment::class);
+    }
 }
