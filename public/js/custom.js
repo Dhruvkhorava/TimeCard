@@ -212,6 +212,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 projectOptions += `<option value="${project.id}">${project.name}</option>`;
             });
 
+            // Format times to HH:mm (remove seconds if present)
+            const startTime = data && data.start_time ? data.start_time.split(':').slice(0, 2).join(':') : "";
+            const endTime = data && data.end_time ? data.end_time.split(':').slice(0, 2).join(':') : "";
+
             let template = `
                 <tr class="update-row">
                     <td>
@@ -232,11 +236,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     </td>
                     <td>
                         <input type="time" class="form-control form-control-sm" name="updates[${index}][start_time]" 
-                            value="${data ? data.start_time : ""}" required>
+                            value="${startTime}" step="60" required>
                     </td>
                     <td>
                         <input type="time" class="form-control form-control-sm" name="updates[${index}][end_time]" 
-                            value="${data ? data.end_time : ""}" required>
+                            value="${endTime}" step="60" required>
                     </td>
                     <td>
                         <textarea class="form-control form-control-sm" name="updates[${index}][work_done]" rows="4" required

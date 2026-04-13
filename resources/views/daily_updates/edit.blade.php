@@ -42,14 +42,14 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="start_time" class="form-control-label font-weight-bold text-xs text-uppercase">Start Time</label>
-                                <input type="time" class="form-control @error('start_time') is-invalid @enderror" id="start_time" name="start_time" value="{{ old('start_time', \Carbon\Carbon::parse($dailyUpdate->start_time)->format('H:i')) }}">
+                                <input type="time" class="form-control @error('start_time') is-invalid @enderror" id="start_time" name="start_time" value="{{ old('start_time', \Carbon\Carbon::parse($dailyUpdate->start_time)->format('H:i')) }}" step="60">
                                 @error('start_time') <p class="text-danger text-xs mt-1">{{ $message }}</p> @enderror
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="end_time" class="form-control-label font-weight-bold text-xs text-uppercase">End Time</label>
-                                <input type="time" class="form-control @error('end_time') is-invalid @enderror" id="end_time" name="end_time" value="{{ old('end_time', \Carbon\Carbon::parse($dailyUpdate->end_time)->format('H:i')) }}">
+                                <input type="time" class="form-control @error('end_time') is-invalid @enderror" id="end_time" name="end_time" value="{{ old('end_time', \Carbon\Carbon::parse($dailyUpdate->end_time)->format('H:i')) }}" step="60">
                                 @error('end_time') <p class="text-danger text-xs mt-1">{{ $message }}</p> @enderror
                             </div>
                         </div>

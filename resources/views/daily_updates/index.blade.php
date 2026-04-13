@@ -62,11 +62,11 @@
                                             </td>
                                             <td>
                                                 <input type="time" class="form-control form-control-sm"
-                                                    name="updates[0][start_time]" required>
+                                                    name="updates[0][start_time]" step="60" required>
                                             </td>
                                             <td>
                                                 <input type="time" class="form-control form-control-sm"
-                                                    name="updates[0][end_time]" required>
+                                                    name="updates[0][end_time]" step="60" required>
                                             </td>
                                             <td>
                                                 <textarea class="form-control form-control-sm" name="updates[0][work_done]" rows="4" required
